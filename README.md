@@ -11,6 +11,70 @@ Các tính năng chính:
 - Công cụ thu thập dữ liệu để huấn luyện mô hình cá nhân hóa
 - Theo dõi lịch sử vi phạm để phân tích an toàn
 
+## Các Công Nghệ và Thư Viện Sử Dụng
+
+### Thư Viện Thị Giác Máy Tính và Học Máy
+- **OpenCV**: Sử dụng cho xử lý hình ảnh, phát hiện khuôn mặt và các thao tác thị giác máy tính cơ bản
+- **MediaPipe**: Cung cấp các giải pháp phát hiện khuôn mặt và tay thời gian thực với độ chính xác cao
+- **TensorFlow/Keras**: Framework học sâu được sử dụng để xây dựng và huấn luyện các mô hình phân loại
+- **NumPy**: Hỗ trợ tính toán số học hiệu suất cao cho các phép toán ma trận và vector
+- **Scikit-learn**: Cung cấp các công cụ phân tích dữ liệu và chia tập dữ liệu huấn luyện/kiểm thử
+
+### Giao Diện Người Dùng và Âm Thanh
+- **PyQt5**: Framework giao diện người dùng đồ họa để xây dựng ứng dụng giám sát
+- **Matplotlib**: Tạo biểu đồ và trực quan hóa kết quả huấn luyện mô hình
+- **PyAudio**: Xử lý phát âm thanh cho các cảnh báo
+
+### Công Cụ Phát Triển và Triển Khai
+- **Python 3.8+**: Ngôn ngữ lập trình chính cho toàn bộ dự án
+- **Virtualenv/Conda**: Quản lý môi trường ảo để cách ly các phụ thuộc của dự án
+- **Git**: Quản lý phiên bản mã nguồn
+- **Tqdm**: Hiển thị thanh tiến trình trong quá trình huấn luyện và xử lý dữ liệu
+
+## Chi Tiết Về Các Mô Hình Được Sử Dụng
+
+### 1. Mô Hình Phát Hiện Khuôn Mặt
+Dự án sử dụng mô hình phát hiện khuôn mặt của OpenCV dựa trên mạng nơ-ron tích chập sâu (DNN) có sẵn trong tệp `opencv_face_detector_uint8.pb`. Mô hình này:
+- Là một mô hình Caffe được huấn luyện trước, được tối ưu hóa cho hiệu suất thời gian thực
+- Có khả năng phát hiện khuôn mặt ở nhiều góc độ và điều kiện ánh sáng khác nhau
+- Hoạt động hiệu quả ngay cả khi khuôn mặt bị che khuất một phần
+
+### 2. Mô Hình Phân Tích Điểm Mốc Khuôn Mặt
+MediaPipe Face Mesh được sử dụng để xác định 468 điểm mốc chi tiết trên khuôn mặt:
+- Cung cấp theo dõi thời gian thực các điểm mốc 3D trên khuôn mặt
+- Cho phép tính toán chính xác các chỉ số như Tỷ Lệ Khía Cạnh Mắt (EAR)
+- Hỗ trợ phát hiện hướng và vị trí đầu thông qua các điểm tham chiếu
+
+### 3. Mô Hình CNN Tùy Chỉnh cho Phân Loại Trạng Thái
+`models/detection_model.py` định nghĩa một mô hình CNN tùy chỉnh được thiết kế đặc biệt cho bài toán phát hiện buồn ngủ và mất tập trung:
+- Kiến trúc CNN đa lớp với các khối tích chập, gộp và dropout
+- Phần đầu ra sử dụng các lớp kết nối đầy đủ với hàm kích hoạt softmax
+- Kiến trúc cụ thể:
+  - 3 khối tích chập (mỗi khối gồm lớp Conv2D, BatchNormalization, ReLU và MaxPooling)
+  - Dropout (0.5) để giảm quá khớp
+  - 2 lớp kết nối đầy đủ
+  - Lớp đầu ra có 2 nơ-ron (focused/distracted)
+
+### 4. Mô Hình Đơn Giản Hóa cho Thiết Bị Giới Hạn
+`models/simple_model.py` cung cấp một mô hình nhẹ hơn cho các thiết bị có tài nguyên tính toán hạn chế:
+- Sử dụng ít lớp tích chập hơn để giảm độ phức tạp tính toán
+- Áp dụng phép tích chập tách biệt theo chiều sâu (depthwise separable convolution) để giảm số lượng tham số
+- Được tối ưu hóa để chạy trên CPU thay vì yêu cầu GPU
+- Hiệu suất phân loại giảm nhẹ so với mô hình đầy đủ nhưng đạt được tốc độ suy luận nhanh hơn đáng kể
+
+### 5. Mô Hình Phát Hiện Tay và Phân Tích Tư Thế
+MediaPipe Hands được áp dụng để phát hiện và theo dõi vị trí tay:
+- Phát hiện 21 điểm mốc 3D trên mỗi bàn tay
+- Cho phép nhận dạng các cử chỉ và vị trí tay
+- Sử dụng phát hiện nhiều tay để theo dõi đồng thời cả hai tay
+- Phân tích khoảng cách giữa các điểm mốc để xác định trạng thái cầm nắm
+
+### Phương Pháp Kết Hợp Mô Hình
+Hệ thống sử dụng phương pháp tổng hợp (ensemble method) để kết hợp kết quả từ các mô hình phân tích khác nhau:
+- Các đặc trưng từ các mô hình riêng lẻ (mắt, đầu, tay) được kết hợp với trọng số
+- Áp dụng cửa sổ trượt thời gian để giảm nhiễu và tăng độ ổn định
+- Ngưỡng quyết định có thể điều chỉnh được thông qua giao diện người dùng
+
 ## Cấu Trúc Thư Mục
 ```
 drowsiness_detection/
