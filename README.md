@@ -303,8 +303,17 @@ pip install -r requirements.txt
 
 ### 2. Quy Trình Thu Thập Dữ Liệu
 ```bash
-# Chạy tập lệnh thu thập dữ liệu
-python data/collect_data.py
+# # Chạy tập lệnh thu thập dữ liệu
+# python data/collect_data.py
+
+# Thu thập dữ liệu cho trạng thái tập trung
+python data/collect_data.py --class focused --samples 200
+
+# Thu thập dữ liệu cho trạng thái mất tập trung
+python data/collect_data.py --class distracted --samples 200
+
+# Thu thập dữ liệu cho trạng thái mắt đóng
+python data/collect_data.py --class eyes_closed --samples 100
 ```
 Trong quá trình thu thập dữ liệu:
 1. Làm theo hướng dẫn trên màn hình để chụp hình ảnh cho các trạng thái khác nhau
