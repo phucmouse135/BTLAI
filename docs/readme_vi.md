@@ -1,10 +1,10 @@
 # Hệ Thống Phát Hiện Buồn Ngủ và Mất Tập Trung Cho Người Lái Xe
 
-## Mô Tả Dự Án
-Dự án này triển khai một hệ thống giám sát người lái xe thời gian thực để phát hiện trạng thái buồn ngủ và mất tập trung. Hệ thống sử dụng các kỹ thuật thị giác máy tính và học máy để phân tích khuôn mặt, trạng thái mắt, vị trí đầu và vị trí tay của người lái xe. Khi phát hiện hành vi không an toàn, hệ thống sẽ đưa ra cảnh báo bằng âm thanh và hình ảnh để nhắc nhở người lái xe, giúp ngăn ngừa tai nạn do mệt mỏi hoặc thiếu tập trung.
+## Tổng Quan
+Hệ thống này triển khai một giải pháp giám sát người lái xe thời gian thực để phát hiện trạng thái buồn ngủ và mất tập trung. Sử dụng các kỹ thuật thị giác máy tính và học máy, hệ thống phân tích khuôn mặt, trạng thái mắt, vị trí đầu và vị trí tay của người lái xe để xác định hành vi tiềm ẩn nguy hiểm. Khi phát hiện, hệ thống sẽ đưa ra cảnh báo bằng âm thanh và hình ảnh để giúp ngăn ngừa tai nạn do mệt mỏi hoặc thiếu tập trung.
 
-Các tính năng chính:
-- Phát hiện buồn ngủ của tài xế thời gian thực thông qua giám sát trạng thái mắt
+## Tính Năng Chính
+- Phát hiện buồn ngủ của người lái xe thời gian thực thông qua giám sát trạng thái mắt
 - Phát hiện mất tập trung bằng cách theo dõi vị trí đầu và tay
 - Hệ thống cảnh báo có thể tùy chỉnh với các cảnh báo liên tục cho đến khi lái xe an toàn trở lại
 - Giao diện thân thiện với người dùng để giám sát và cấu hình
@@ -13,12 +13,10 @@ Các tính năng chính:
 
 ## Tài Liệu
 - [Giải Thích Mã Nguồn](docs/code_explanation_vi.md) - Giải thích chi tiết về thuật toán, hàm và công thức
-- [Công Thức Toán Học](docs/formulas_en.md) - Chi tiết về các công thức toán học sử dụng trong hệ thống
-- [Phương Pháp Làm Mịn Dữ Liệu](docs/time_smoothing_en.md) - Giải thích về các phương pháp làm mịn dữ liệu thời gian
 - [Hướng Dẫn Sử Dụng](docs/user_guide_vi.md) - Hướng dẫn sử dụng ứng dụng
 - [Hướng Dẫn Cho Nhà Phát Triển](docs/developer_guide_vi.md) - Thông tin cho nhà phát triển mở rộng hệ thống
 
-## Công Nghệ và Thư Viện Sử Dụng
+## Công Nghệ và Thư Viện
 
 ### Thị Giác Máy Tính và Học Máy
 - **OpenCV**: Xử lý hình ảnh và phát hiện khuôn mặt cơ bản
@@ -30,7 +28,7 @@ Các tính năng chính:
 - **PyQt5**: Framework giao diện đồ họa người dùng
 - **PyAudio**: Phát lại âm thanh cảnh báo
 
-## Cấu Trúc Mã Nguồn
+## Cấu Trúc Dự Án
 
 ```
 drowsiness_detection/
@@ -155,17 +153,21 @@ python retrain_model.py
 - Xác định vị trí tay (không ở trên vô lăng)
 - Kết hợp các yếu tố để đánh giá mức độ mất tập trung
 
-## Cấu Hình Hệ Thống
+## Nền Tảng Toán Học
 
-Các tham số có thể được điều chỉnh trong giao diện người dùng:
-- **Ngưỡng EAR**: Điều chỉnh độ nhạy phát hiện buồn ngủ
-- **Ngưỡng Độ Tin Cậy**: Điều chỉnh độ tin cậy của phát hiện
-- **Nguồn Camera**: Chọn camera để sử dụng
-- **Cảnh Báo Âm Thanh**: Bật/tắt và tùy chỉnh
+### Công Thức Tỷ Lệ Khía Cạnh Mắt (EAR)
 
-## Phương Pháp Kiểm Thử và Định Hướng Phát Triển
+Phát hiện buồn ngủ cốt lõi dựa trên Tỷ Lệ Khía Cạnh Mắt, được tính như sau:
 
-Hệ thống áp dụng một chiến lược kiểm thử toàn diện:
+```
+EAR = (||p2-p6|| + ||p3-p5||) / (2 * ||p1-p4||)
+```
+
+Trong đó p1 đến p6 là các điểm mốc cụ thể xung quanh mắt, và ||p1-p4|| đại diện cho khoảng cách Euclidean giữa điểm p1 và p4.
+
+## Phương Pháp Kiểm Thử
+
+Hệ thống sử dụng một chiến lược kiểm thử toàn diện:
 
 1. **Kiểm Thử Đơn Vị**: Kiểm thử các thành phần riêng lẻ một cách độc lập
 2. **Kiểm Thử Tích Hợp**: Kiểm thử cách các thành phần hoạt động cùng nhau
