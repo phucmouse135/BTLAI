@@ -1,0 +1,12 @@
+{
+    "camera_id": 0,
+    "ear_threshold": 0.2,
+    "confidence_threshold": 0.7,
+    "detection_mode": "all",
+    "frame_rate": 15,
+    "model_path": "d:\\drowsiness_detection\\models\\saved_model.pkl",
+    "capture_width": 640,
+    "capture_height": 480,
+    "sound_alerts_enabled": true,
+    "continuous_alerts": true
+}
